@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 import json
 
 app = Flask(__name__)
@@ -8,13 +8,18 @@ with open("db.json", "r") as f:
 
 messages = data["messages"]
 
-
-@app.route("/messages", methods=["POST"])
 def write_message(message):
     messages.append(message)
     with open("db.json", "w") as f:
         json.dump(data, f)
 
+    return "Message added"
+
+
+@app.route("/messages", methods=["POST"])
+def add_message():
+    message = request.json
+    return write_message(message)
 
 @app.route("/messages", methods=["GET"])
 def get_messages():
